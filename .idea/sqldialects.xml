@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/procedures/clear_canvas.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/draw/draw_circle.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/draw/draw_line.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/procedures/draw/draw_rect.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/render_canvas.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/tools/fill.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/setup/create_tables.sql" dialect="PostgreSQL" />
