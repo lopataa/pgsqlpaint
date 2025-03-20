@@ -7,12 +7,12 @@ CREATE OR REPLACE PROCEDURE
 AS
 $$
 begin
-    execute 'truncate table canvas';
+    truncate table canvas restart identity;
 
     -- Insert empty rows (height)
     FOR y IN 1..height
         LOOP
-            FOR x IN 1..height
+            FOR x IN 1..width
                 LOOP
                     EXECUTE 'INSERT INTO canvas (x,y) VALUES (' || x || ',' || y || ')';
                 END LOOP;

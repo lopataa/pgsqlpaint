@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/procedures/canvas/get_pixel.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/canvas/set_pixel.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/clear_canvas.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/procedures/line/draw_line.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/procedures/draw/draw_circle.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/procedures/draw/draw_line.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/procedures/render_canvas.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/procedures/tools/fill.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/setup/create_tables.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/setup/install_python.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="PostgreSQL" />
