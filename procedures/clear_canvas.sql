@@ -1,21 +1,13 @@
-CREATE OR REPLACE PROCEDURE
-    clear_canvas(
-    IN width INT default 800,
-    IN height INT default 600
-)
-    LANGUAGE plpgsql
-AS
-$$
-begin
-    truncate table canvas restart identity;
+CREATE OR REPLACE PROCEDURE clear_canvas(
+    IN width INT DEFAULT 800,
+    IN height INT DEFAULT 600
+) LANGUAGE plpgsql AS $$
+BEGIN
+    TRUNCATE TABLE canvas RESTART IDENTITY;
 
-    -- Insert empty rows (height)
-    FOR y IN 1..height
-        LOOP
-            FOR x IN 1..width
-                LOOP
-                    EXECUTE 'INSERT INTO canvas (x,y) VALUES (' || x || ',' || y || ')';
-                END LOOP;
-        END LOOP;
-end;
+    INSERT INTO canvas (x, y)
+    SELECT x, y
+    FROM generate_series(1, width) AS x
+             CROSS JOIN generate_series(1, height) AS y;
+END;
 $$;
