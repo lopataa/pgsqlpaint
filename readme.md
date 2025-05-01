@@ -7,7 +7,8 @@ Science and Economics. The main goal of this assignment was to demonstrate our k
 in simple Computer Graphics. As a joke I decided to use PL/pgsql as the programming language for this project.
 
 As an requirement I had to also write a frontend to it, because the teacher had changed the assignment to "user-friendly"
-after I had already started. The main focus wasn't on the frontend, so beware that it is not the prettiest thing in the world. It is written in Java.
+after I had already started. The main focus wasn't on the frontend, so beware that it is not the prettiest thing in the world.
+The frontend can be found at [lopataa/pgsqlpaint-frontend](https://github.com/lopataa/pgsqlpaint-frontend).
 
 Functionality is documented in [docs.md](docs.md).
 
