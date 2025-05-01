@@ -16,6 +16,8 @@ Functionality is documented in [docs.md](docs.md).
 
 To setup just run `docker compose up`, or `setup_db.sh` if you want to run it locally. Running it locally might have some performance benefits.
 
+When setting up locally make sure to have PostgreSQL installed along with python3 and the `plpython3u` extension.
+
 ## Example usage
 
 ```sql
