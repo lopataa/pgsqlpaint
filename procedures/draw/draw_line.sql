@@ -5,7 +5,9 @@ CREATE OR REPLACE PROCEDURE draw_line(
     IN y2 INT,
     IN r INT DEFAULT 255,
     IN g INT DEFAULT 255,
-    IN b INT DEFAULT 255
+    IN b INT DEFAULT 255,
+    IN stroke_width INT DEFAULT 1,
+    IN style varchar DEFAULT 'Solid'
 )
     LANGUAGE plpgsql
 AS
@@ -16,9 +18,21 @@ DECLARE
     k FLOAT;
     q FLOAT;
     temp INT;
+    -- For dash/dot pattern
+    step INT := 0;
+    dash_length INT := 8;  -- Length of dash
+    gap_length INT := 4;   -- Length of gap between dashes
+    dot_interval INT := 4; -- Interval between dots
 BEGIN
+    IF stroke_width > 0 THEN
+    --multiply by stroke_width
+        dash_length := dash_length * stroke_width;
+        gap_length := gap_length * stroke_width;
+        dot_interval := dot_interval * stroke_width;
+    END IF;
+
     -- Show the params
-    RAISE NOTICE 'x1: %, y1: %, x2: %, y2: %, r: %, g: %, b: %', x1, y1, x2, y2, r, g, b;
+    RAISE NOTICE 'x1: %, y1: %, x2: %, y2: %, r: %, g: %, b: %, style: %', x1, y1, x2, y2, r, g, b, style;
 
     -- Handle vertical line case (dx == 0)
     IF x1 = x2 THEN
@@ -29,11 +43,24 @@ BEGIN
             y2 := temp;
         END IF;
 
-        -- Draw vertical line
         FOR y IN y1..y2 LOOP
-                CALL set_pixel(x1, y, r, g, b);
+                -- Style logic
+                IF style = 'Solid' THEN
+                    CALL set_radius(x1, y, r, g, b, stroke_width);
+                ELSIF style = 'Dashed' THEN
+                    IF (step % (dash_length + gap_length)) < dash_length THEN
+                        CALL set_radius(x1, y, r, g, b, stroke_width);
+                    END IF;
+                    step := step + 1;
+                ELSIF style = 'Dotted' THEN
+                    IF (step % dot_interval) = 0 THEN
+                        CALL set_radius(x1, y, r, g, b, stroke_width);
+                    END IF;
+                    step := step + 1;
+                END IF;
             END LOOP;
 
+        NOTIFY repaint;
         RETURN; -- Early exit for vertical lines
     END IF;
 
@@ -50,11 +77,27 @@ BEGIN
             temp := x1;
             x1 := x2;
             x2 := temp;
+            temp := y1;
+            y1 := y2;
+            y2 := temp;
         END IF;
 
         FOR x IN x1..x2 LOOP
-                CALL set_pixel(x, ROUND(k * x + q)::INTEGER, r, g, b);
+                IF style = 'Solid' THEN
+                    CALL set_radius(x, ROUND(k * x + q)::INTEGER, r, g, b, stroke_width);
+                ELSIF style = 'Dashed' THEN
+                    IF (step % (dash_length + gap_length)) < dash_length THEN
+                        CALL set_radius(x, ROUND(k * x + q)::INTEGER, r, g, b, stroke_width);
+                    END IF;
+                    step := step + 1;
+                ELSIF style = 'Dotted' THEN
+                    IF (step % dot_interval) = 0 THEN
+                        CALL set_radius(x, ROUND(k * x + q)::INTEGER, r, g, b, stroke_width);
+                    END IF;
+                    step := step + 1;
+                END IF;
             END LOOP;
+
         -- For steep slopes (|k| >= 1), iterate over y
     ELSE
         -- Ensure y1 <= y2 for the loop
@@ -62,11 +105,28 @@ BEGIN
             temp := y1;
             y1 := y2;
             y2 := temp;
+            temp := x1;
+            x1 := x2;
+            x2 := temp;
         END IF;
 
         FOR y IN y1..y2 LOOP
-                CALL set_pixel(ROUND((y - q) / k)::INTEGER, y, r, g, b);
+                IF style = 'Solid' THEN
+                    CALL set_radius(ROUND((y - q) / k)::INTEGER, y, r, g, b, stroke_width);
+                ELSIF style = 'Dashed' THEN
+                    IF (step % (dash_length + gap_length)) < dash_length THEN
+                        CALL set_radius(ROUND((y - q) / k)::INTEGER, y, r, g, b, stroke_width);
+                    END IF;
+                    step := step + 1;
+                ELSIF style = 'Dotted' THEN
+                    IF (step % dot_interval) = 0 THEN
+                        CALL set_radius(ROUND((y - q) / k)::INTEGER, y, r, g, b, stroke_width);
+                    END IF;
+                    step := step + 1;
+                END IF;
             END LOOP;
     END IF;
+
+    NOTIFY repaint;
 END;
 $$;

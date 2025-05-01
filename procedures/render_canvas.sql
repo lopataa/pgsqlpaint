@@ -105,16 +105,25 @@ BEGIN
             E'\\x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
     -- Generate pixel data
-    pixel_data := (
-        SELECT string_agg(
-                       CHR(get_byte(b)) ||
-                       CHR(get_byte(g)) ||
-                       CHR(get_byte(r)) ||
-                       '\xff'::bytea,
-                       '' ORDER BY y DESC, x ASC
-               )
-        FROM canvas
-    );
+    -- Generate complete pixel grid with missing pixels as black
+    IF _width > 0 AND _height > 0 THEN
+        pixel_data := (
+            SELECT string_agg(
+                           COALESCE(
+                                   get_byte(b) ||
+                                   get_byte(g) ||
+                                   get_byte(r) ||
+                                   '\xff'::bytea,
+                                   E'\\x000000ff'::bytea  -- Black with alpha
+                           ),
+                           '' ORDER BY y DESC, x ASC
+                   )
+            FROM
+                generate_series(1, _width) AS x
+                    CROSS JOIN generate_series(1, _height) AS y
+                    LEFT JOIN canvas USING (x, y)
+        );
+    END IF;
 
     -- Combine all components
     result := bmp_header || dib_header || pixel_data;

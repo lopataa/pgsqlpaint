@@ -5,15 +5,19 @@ CREATE OR REPLACE PROCEDURE draw_rect(
     IN y2 INT,
     IN r INT DEFAULT 255,
     IN g INT DEFAULT 255,
-    IN b INT DEFAULT 255
+    IN b INT DEFAULT 255,
+    IN stroke_width INT DEFAULT 1,
+    IN style VARCHAR DEFAULT 'Solid'
 )
     LANGUAGE plpgsql
 AS
 $$
 BEGIN
-    CALL draw_line(x1, y1, x2, y1, r, g, b);
-    CALL draw_line(x1, y1, x1, y2, r, g, b);
-    CALL draw_line(x2, y1, x2, y2, r, g, b);
-    CALL draw_line(x1, y2, x2, y2, r, g, b);
+    CALL draw_line(x1, y1, x2, y1, r, g, b, stroke_width, style);
+    CALL draw_line(x1, y1, x1, y2, r, g, b, stroke_width, style);
+    CALL draw_line(x2, y1, x2, y2, r, g, b, stroke_width, style);
+    CALL draw_line(x1, y2, x2, y2, r, g, b, stroke_width, style);
+
+    NOTIFY repaint;
 END;
 $$;

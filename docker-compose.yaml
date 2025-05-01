@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    build: .
+    environment:
+      POSTGRES_DB: draw
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./setup:/docker-entrypoint-initdb.d/setup:ro
+      - ./procedures:/docker-entrypoint-initdb.d/procedures:ro
+      - ./setup_db.sh:/docker-entrypoint-initdb.d/00_run_all_sql.sh:ro
+    ports:
+      - "5432:5432"
