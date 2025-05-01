@@ -17,6 +17,12 @@ maximum
 x and y values from the table. The canvas is initialized with a single black pixel at (800, 600) when the database is
 created. If a pixel is unset, it is considered to be black (0, 0, 0).
 
+## Events
+
+To save on resources, clients listen to the `repaint` event. This event is triggered whenever an action is done. This
+saves on resources, unlike polling would. Also allows for a more responsive experience. When using the paint with
+multiple clients, the changes are visible to all clients.
+
 ## Pixel Operations
 
 ### set\_pixel
